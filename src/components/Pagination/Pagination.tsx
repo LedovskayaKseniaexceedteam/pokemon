@@ -1,44 +1,33 @@
-import { PaginationItem } from "@material-ui/lab";
-import { default as PaginationMUI } from "@material-ui/lab/Pagination";
-import { FC, ReactNode } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { FC, ReactNode, useEffect, useMemo } from "react";
+import { useHistory, useLocation } from "react-router";
+import { Row } from "./Row";
 
 type Props = {
   children: ReactNode;
 };
 
+const itemsPerPageVariants = ["10", "20", "50"];
+
 export const Pagination: FC<Props> = ({ children }) => {
-  let { search } = useLocation();
-
-  const query = new URLSearchParams(search);
-  const page = query.get("page");
-  // const paramValue = query.get("value");
-
+  const { search } = useLocation();
+  const params = useMemo(() => new URLSearchParams(search), [search]);
+  const page = params.get("page");
+  const perPage = params.get("per_page");
+  const history = useHistory();
+  useEffect(() => {
+    if (!page) {
+      params.append("page", "1");
+    }
+    if (!perPage) {
+      params.append("per_page", "10");
+    }
+    history.push({ search: params.toString() });
+  }, []);
   return (
     <>
-      <PaginationMUI
-        page={page ? +page : 1}
-        count={10}
-        renderItem={(item) => (
-          <PaginationItem
-            component={Link}
-            to={`/${item.page === 1 ? "" : `?page=${item.page}`}`}
-            {...item}
-          />
-        )}
-      />
+      <Row itemsPerPageVariants={itemsPerPageVariants} />
       {children}
-      <PaginationMUI
-        page={page ? +page : 1}
-        count={10}
-        renderItem={(item) => (
-          <PaginationItem
-            component={Link}
-            to={`/${item.page === 1 ? "" : `?page=${item.page}`}`}
-            {...item}
-          />
-        )}
-      />
+      <Row itemsPerPageVariants={itemsPerPageVariants} />
     </>
   );
 };
