@@ -28,11 +28,11 @@ export const ItemsPerPage: FC<Props> = ({ variants }) => {
   const [query, setQuery] = useState(perPage);
   const history = useHistory();
 
-  function onChange(
+  const onChange = (
     event: ChangeEvent<{ name?: string | undefined; value: unknown }>
-  ) {
+  ) => {
     setQuery(event.target.value as string);
-  }
+  };
 
   useEffect(() => {
     if (perPage === query) return;

@@ -16,9 +16,9 @@ export const Pages = () => {
   const [query, setQuery] = useState(page);
   const history = useHistory();
 
-  function onChange(event: ChangeEvent<unknown>, page: number) {
+  const onChange = (event: ChangeEvent<unknown>, page: number) => {
     setQuery(page.toString());
-  }
+  };
 
   useEffect(() => {
     params.delete("page");
@@ -28,10 +28,10 @@ export const Pages = () => {
 
   return (
     <>
-      {!!page && !!perPage && (
+      {!!page && !!perPage && !!totalCount && (
         <Pagination
           page={+page}
-          count={(totalCount || 100) / +perPage}
+          count={Math.floor(totalCount / +perPage)}
           onChange={onChange}
         />
       )}

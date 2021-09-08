@@ -9,12 +9,20 @@ export type Result = {
 const initialState = {
   basicInfo: {
     count: null as null | number,
-    next: null as null | string,
-    previous: null as null | string,
     results: [] as Result[],
   },
-  resultsCache: [] as Result[],
-  itemsCache: {} as { [key in Pokemon["name"]]: Pokemon },
+  itemsCache: {} as {
+    [key in Pokemon["name"]]: Pokemon | { name: string; error: boolean };
+  },
+  types: [] as {
+    name: string;
+    id: number;
+    color: string;
+  }[],
+  filter: null as null | {
+    names: string[];
+    items: Pokemon[];
+  },
 };
 
 export type InitialState = typeof initialState;
@@ -28,6 +36,11 @@ export const pokemonsReducer = (
       return {
         ...state,
         basicInfo: action.payload,
+      };
+    case TYPES.SET_POSSIBLE_TYPES:
+      return {
+        ...state,
+        types: action.payload,
       };
     case TYPES.SET_POKEMON:
       return {
